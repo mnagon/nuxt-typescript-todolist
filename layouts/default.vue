@@ -13,7 +13,7 @@ body {
   box-sizing: border-box;
 }
 
-button:focus {
+*:focus {
   outline: none;
 }
 </style>

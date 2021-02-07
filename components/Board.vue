@@ -25,6 +25,7 @@ export default Vue.extend({})
   height: 80px;
   display: flex;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  background-color: #fff;
   border-radius: 10px;
 }
 
@@ -49,5 +50,14 @@ export default Vue.extend({})
   font-size: 14px;
   opacity: 0.5;
   margin-top: 8px;
+}
+
+@media only screen and (min-width: 768px) {
+  .board {
+    flex-direction: column;
+    height: 418px;
+    width: 122px;
+    min-width: 122px;
+  }
 }
 </style>
