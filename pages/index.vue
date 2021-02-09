@@ -8,11 +8,10 @@
         <todo-input />
         <div class="todo-wrapper">
           <todo-item
-            :todo="{
-              done: true,
-              todo: 'Todo title',
-            }"
-            :index="0"
+            v-for="(todo, $todoIndex) in todoList"
+            :key="todo + $todoIndex"
+            :todo="todo"
+            :index="$todoIndex"
           />
         </div>
       </div>
@@ -27,12 +26,30 @@ import Board from '~/components/Board.vue'
 import TodoItem from '~/components/TodoItem.vue'
 import TodoInput from '~/components/TodoInput.vue'
 
+interface Todo {
+  done: boolean
+  todo: string
+}
+
+interface State {}
+
 export default Vue.extend({
   components: {
     Navbar,
     Board,
     TodoItem,
     TodoInput,
+  },
+  data(): State {
+    return {}
+  },
+  computed: {
+    todoList(): Todo[] {
+      return this.$accessor.todoList
+    },
+  },
+  mounted(): void {
+    this.$accessor.fetchTodoList()
   },
 })
 </script>

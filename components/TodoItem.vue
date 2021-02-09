@@ -6,22 +6,34 @@
       editing,
     }"
   >
-    <button class="delete-button">
+    <button class="delete-button" @click="deleteTodo">
       <i class="fas fa-trash-alt"></i>
     </button>
-    <button class="edit-button">
+    <button class="edit-button" @click="setEditing(true)">
       <i class="fas fa-pencil-alt"></i>
     </button>
     <div class="todo-card">
       <span class="todo-status">
         {{ done ? 'Complete' : 'Continue' }}
       </span>
-      <div class="todo-status-icon">
-        <i v-if="done" class="fas fa-check-circle"></i>
-        <i v-else class="fas fa-clock"></i>
+      <div class="todo-status-icon" @click="toggleDone">
+        <i
+          :class="{
+            'fas fa-check-circle': done,
+            'fas fa-clock': !done,
+          }"
+        ></i>
       </div>
       <div v-if="!editing" class="todo-text">{{ todo.todo }}</div>
-      <input v-else v-model="todoForm" class="todo-edit-input" type="text" />
+      <input
+        v-else
+        :id="id"
+        v-model.lazy="todoForm"
+        class="todo-edit-input"
+        type="text"
+        @blur="setEditing(false)"
+        @keyup.enter="setEditing(false)"
+      />
     </div>
   </div>
 </template>
@@ -31,6 +43,7 @@ import Vue, { PropType } from 'vue'
 
 interface State {
   editing: boolean
+  id: string
 }
 
 interface Todo {
@@ -51,6 +64,7 @@ export default Vue.extend({
   },
   data(): State {
     return {
+      id: 'input' + this.index,
       editing: false,
     }
   },
@@ -60,16 +74,33 @@ export default Vue.extend({
         return this.todo.done
       },
       set(bool: boolean): void {
-        this.$emit('change', bool)
+        const todo: Todo = { done: bool, todo: this.todo.todo }
+        this.$accessor.editTodo({ todo, todoIndex: this.index })
       },
     },
     todoForm: {
       get(): string {
         return this.todo.todo
       },
-      set(todo: string): void {
-        this.$emit('edit', todo)
+      set(val: string): void {
+        const todo: Todo = { done: this.done, todo: val }
+        this.$accessor.editTodo({ todo, todoIndex: this.index })
       },
+    },
+  },
+
+  methods: {
+    setEditing(bool: boolean): void {
+      this.editing = bool
+      if (bool) {
+        document.getElementById(this.id)?.focus()
+      }
+    },
+    deleteTodo(): void {
+      this.$accessor.deleteTodo(this.index)
+    },
+    toggleDone(): void {
+      this.done = !this.done
     },
   },
 })
@@ -164,8 +195,8 @@ export default Vue.extend({
   margin-top: 32px;
   color: #21273d;
   border-color: transparent;
-  background-color: transparent;
-  padding-right: 96px;
+  background-color: #c0d4f1;
+  margin-right: 96px;
 }
 
 .todo-text {

@@ -1,14 +1,40 @@
 <template>
   <div class="todo-input">
-    <input type="text" placeholder="Type todo here..." />
-    <button class="add-button">
+    <input
+      v-model="newTodo"
+      type="text"
+      placeholder="Type todo here..."
+      @keyup.enter="addTodo"
+    />
+    <button class="add-button" @click="addTodo">
       <i class="fas fa-plus"></i>
     </button>
   </div>
 </template>
 
-<script>
-export default {}
+<script lang="ts">
+import Vue from 'vue'
+
+interface State {
+  newTodo: string
+}
+export default Vue.extend({
+  name: 'TodoInput',
+  data(): State {
+    return {
+      newTodo: '',
+    }
+  },
+  methods: {
+    addTodo(): void {
+      console.log('add todo')
+      if (this.newTodo) {
+        this.$accessor.addTodo(this.newTodo)
+        this.newTodo = ''
+      }
+    },
+  },
+})
 </script>
 
 <style scoped>
