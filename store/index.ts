@@ -11,6 +11,7 @@ interface Todo {
 }
 
 interface State {
+  currentTab: string
   todoList: Todo[]
 }
 
@@ -20,6 +21,7 @@ interface UpdateTodoPayload {
 }
 
 export const state = (): State => ({
+  currentTab: 'all',
   todoList: [],
 })
 
@@ -34,8 +36,8 @@ export const mutations = mutationTree(state, {
   SET_TODO_LIST(state, todoList: Todo[]): void {
     state.todoList = todoList
   },
-  PUSH_TODO_LIST(state, todo: Todo): void {
-    state.todoList.push(todo)
+  UNSHIFT_TODO_LIST(state, todo: Todo): void {
+    state.todoList.unshift(todo)
   },
   UPDATE_TODO(state, { todo, todoIndex }: UpdateTodoPayload): void {
     state.todoList[todoIndex].todo = todo.todo
@@ -43,6 +45,9 @@ export const mutations = mutationTree(state, {
   },
   SPLICE_TODO_LIST(state, index: number): void {
     state.todoList.splice(index, 1)
+  },
+  SET_CURRENT_TAB(state, tab: string): void {
+    state.currentTab = tab
   },
 })
 
@@ -56,7 +61,7 @@ export const actions = actionTree(
       commit('SET_TODO_LIST', todolist)
     },
     addTodo({ commit, dispatch }, todo: string): void {
-      commit('PUSH_TODO_LIST', { todo, done: false })
+      commit('UNSHIFT_TODO_LIST', { todo, done: false })
       dispatch('updateStorage')
     },
     editTodo(
@@ -72,6 +77,9 @@ export const actions = actionTree(
     },
     updateStorage({ state }): void {
       localStorage.setItem('todoList', JSON.stringify(state.todoList))
+    },
+    setTab({ commit }, tab: string): void {
+      commit('SET_CURRENT_TAB', tab)
     },
   }
 )

@@ -1,15 +1,15 @@
 <template>
   <div class="board">
     <div class="counter">
-      <span class="counter__total">15</span>
+      <span class="counter__total">{{ $accessor.todoList.length }}</span>
       <span class="counter__label">TOTAL</span>
     </div>
     <div class="counter">
-      <span class="counter__total">7</span>
+      <span class="counter__total">{{ $accessor.undoneTodo.length }}</span>
       <span class="counter__label">TODO</span>
     </div>
     <div class="counter">
-      <span class="counter__total">8</span>
+      <span class="counter__total">{{ $accessor.doneTodo.length }}</span>
       <span class="counter__label">DONE</span>
     </div>
   </div>

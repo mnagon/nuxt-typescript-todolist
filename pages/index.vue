@@ -45,7 +45,13 @@ export default Vue.extend({
   },
   computed: {
     todoList(): Todo[] {
-      return this.$accessor.todoList
+      return this.$accessor.currentTab === 'all'
+        ? this.$accessor.todoList
+        : this.$accessor.currentTab === 'done'
+        ? this.$accessor.doneTodo
+        : this.$accessor.currentTab === 'undone'
+        ? this.$accessor.undoneTodo
+        : []
     },
   },
   mounted(): void {

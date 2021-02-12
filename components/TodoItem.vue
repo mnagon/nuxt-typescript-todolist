@@ -2,7 +2,7 @@
   <div
     class="todo-item"
     :class="{
-      done,
+      done: todo.done,
       editing,
     }"
   >
@@ -14,17 +14,14 @@
     </button>
     <div class="todo-card">
       <span class="todo-status">
-        {{ done ? 'Complete' : 'Continue' }}
+        {{ todo.done ? 'Done' : 'Undone' }}
       </span>
       <div class="todo-status-icon" @click="toggleDone">
-        <i
-          :class="{
-            'fas fa-check-circle': done,
-            'fas fa-clock': !done,
-          }"
-        ></i>
+        <img v-if="todo.done" src="~/assets/check.svg" />
       </div>
-      <div v-if="!editing" class="todo-text">{{ todo.todo }}</div>
+      <div v-if="!editing" class="todo-text" @click="setEditing(true)">
+        {{ todo.todo }}
+      </div>
       <input
         v-else
         :id="id"
@@ -69,21 +66,12 @@ export default Vue.extend({
     }
   },
   computed: {
-    done: {
-      get(): boolean {
-        return this.todo.done
-      },
-      set(bool: boolean): void {
-        const todo: Todo = { done: bool, todo: this.todo.todo }
-        this.$accessor.editTodo({ todo, todoIndex: this.index })
-      },
-    },
     todoForm: {
       get(): string {
         return this.todo.todo
       },
       set(val: string): void {
-        const todo: Todo = { done: this.done, todo: val }
+        const todo: Todo = { done: this.todo.done, todo: val }
         this.$accessor.editTodo({ todo, todoIndex: this.index })
       },
     },
@@ -93,14 +81,17 @@ export default Vue.extend({
     setEditing(bool: boolean): void {
       this.editing = bool
       if (bool) {
-        document.getElementById(this.id)?.focus()
+        this.$nextTick(() => {
+          document.getElementById(this.id)?.focus()
+        })
       }
     },
     deleteTodo(): void {
       this.$accessor.deleteTodo(this.index)
     },
     toggleDone(): void {
-      this.done = !this.done
+      const todo: Todo = { done: !this.todo.done, todo: this.todo.todo }
+      this.$accessor.editTodo({ todo, todoIndex: this.index })
     },
   },
 })
@@ -138,7 +129,7 @@ export default Vue.extend({
   left: 0;
   height: 100%;
   width: 8px;
-  background-color: #f6d39e;
+  background-color: #b9d4f1;
 }
 
 .todo-item.done .todo-card::before {
@@ -177,16 +168,29 @@ export default Vue.extend({
 }
 
 .todo-status-icon {
-  width: 72px;
-  min-width: 72px;
-  text-align: center;
-  font-size: 20px;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #b9d4f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
   margin-top: 32px;
-  color: #f6d39e;
+  margin-left: 32px;
+  margin-right: 32px;
+  color: #fff;
 }
 
+.todo-status-icon:hover,
 .todo-item.done .todo-status-icon {
-  color: #a4ec82;
+  background-color: #a4ec82;
+}
+
+.todo-status-icon img {
+  width: 12px;
+  height: 12px;
 }
 
 .todo-edit-input {
@@ -205,6 +209,7 @@ export default Vue.extend({
   margin-top: 32px;
   color: #21273d;
   overflow: hidden;
+  cursor: text;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -212,7 +217,7 @@ export default Vue.extend({
 
 @media only screen and (min-width: 768px) {
   .todo-text {
-    padding-right: 96px;
+    margin-right: 96px;
   }
 
   .delete-button,

@@ -9,9 +9,24 @@
         <i class="fas fa-plus"></i>
       </button>
       <ul class="nav-list">
-        <li class="active">All</li>
-        <li>Todo</li>
-        <li>Done</li>
+        <li
+          :class="{ active: $accessor.currentTab === 'all' }"
+          @click="setTab('all')"
+        >
+          All
+        </li>
+        <li
+          :class="{ active: $accessor.currentTab === 'undone' }"
+          @click="setTab('undone')"
+        >
+          Todo
+        </li>
+        <li
+          :class="{ active: $accessor.currentTab === 'done' }"
+          @click="setTab('done')"
+        >
+          Done
+        </li>
       </ul>
     </nav>
     <add-todo-modal ref="addTodoModal" />
@@ -27,6 +42,11 @@ export default Vue.extend({
   components: {
     AddTodoModal,
     DropdownNav,
+  },
+  methods: {
+    setTab(tab: string): void {
+      this.$accessor.setTab(tab)
+    },
   },
 })
 </script>
