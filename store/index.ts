@@ -54,7 +54,7 @@ export const mutations = mutationTree(state, {
 export const actions = actionTree(
   { state, getters, mutations },
   {
-    fetchTodoList({ commit }): void {
+    getTodoList({ commit }): void {
       const todolist: Todo[] = JSON.parse(
         localStorage.getItem('todoList') || '[]'
       )

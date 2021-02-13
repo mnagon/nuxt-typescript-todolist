@@ -11,19 +11,19 @@
       <ul class="nav-list">
         <li
           :class="{ active: $accessor.currentTab === 'all' }"
-          @click="setTab('all')"
+          @click="$accessor.setTab('all')"
         >
           All
         </li>
         <li
           :class="{ active: $accessor.currentTab === 'undone' }"
-          @click="setTab('undone')"
+          @click="$accessor.setTab('undone')"
         >
           Todo
         </li>
         <li
           :class="{ active: $accessor.currentTab === 'done' }"
-          @click="setTab('done')"
+          @click="$accessor.setTab('done')"
         >
           Done
         </li>
@@ -42,11 +42,6 @@ export default Vue.extend({
   components: {
     AddTodoModal,
     DropdownNav,
-  },
-  methods: {
-    setTab(tab: string): void {
-      this.$accessor.setTab(tab)
-    },
   },
 })
 </script>

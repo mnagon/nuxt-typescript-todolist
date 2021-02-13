@@ -55,7 +55,7 @@ export default Vue.extend({
     },
   },
   mounted(): void {
-    this.$accessor.fetchTodoList()
+    this.$accessor.getTodoList()
   },
 })
 </script>
